@@ -1,7 +1,6 @@
 const board = document.getElementById('puzzle-board');
 const piecesContainer = document.getElementById('pieces-container');
 const resetButton = document.getElementById('reset-button');
-const codeSection = document.getElementById('code-section');
 const size = 5;
 const pieceSize = 100;
 let pieces = [];
@@ -22,7 +21,6 @@ function setActivePuzzle(n) {
 function init() {
   board.innerHTML = '';
   piecesContainer.innerHTML = '';
-  codeSection.innerHTML = '';
   pieces = [];
   codeShown = false;
   document.getElementById('fireworks-container').innerHTML = '';
@@ -138,7 +136,12 @@ function checkWin() {
 
   let correct = true;
   placed.forEach(p => {
-    if (p.dataset.currentX !== p.dataset.correctX || p.dataset.currentY !== p.dataset.correctY) {
+    const cx = p.dataset.currentX;
+    const cy = p.dataset.currentY;
+    const correctX = p.dataset.correctX;
+    const correctY = p.dataset.correctY;
+
+    if (cx === undefined || cy === undefined || cx !== correctX || cy !== correctY) {
       correct = false;
     }
   });
@@ -150,11 +153,9 @@ function checkWin() {
 }
 
 function showWinCode() {
-  piecesContainer.innerHTML = `<p>${descriptions[currentPuzzle]}</p>`;
-
-  const codeText = `Код: NN2025-TOUR`;
-  codeSection.innerHTML = `
-    <p>${codeText}</p>
+  piecesContainer.innerHTML = `
+    <p>${descriptions[currentPuzzle]}</p>
+    <p style="margin-top: 20px; font-weight: bold;">Код: NN2025-TOUR</p>
     <button class="copy-button" onclick="navigator.clipboard.writeText('NN2025-TOUR')">Скопировать код</button>
   `;
 
