@@ -91,13 +91,17 @@ function enableDrag(piece) {
       const y = Math.floor(relY / pieceSize);
 
       // Условия допустимого попадания
-      const offsetInsideCellX = relX % pieceSize;
-      const offsetInsideCellY = relY % pieceSize;
+      const snapTolerance = 40;
 
-      const isCloseToCenter = (
-        offsetInsideCellX > 20 && offsetInsideCellX < 80 &&
-        offsetInsideCellY > 20 && offsetInsideCellY < 80
-      );
+const centerX = x * pieceSize + pieceSize / 2;
+const centerY = y * pieceSize + pieceSize / 2;
+
+const dist = Math.sqrt(
+  Math.pow(e.pageX - (boardRect.left + centerX), 2) +
+  Math.pow(e.pageY - (boardRect.top + centerY), 2)
+);
+
+const isCloseToCenter = dist <= snapTolerance;
 
       const occupied = Array.from(board.children).some(el => {
         return (
