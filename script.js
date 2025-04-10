@@ -86,29 +86,35 @@ function enableDrag(piece) {
       const boardRect = board.getBoundingClientRect();
       const relX = e.pageX - boardRect.left;
       const relY = e.pageY - boardRect.top;
-      const x = Math.round(relX / pieceSize - 0.5);
-      const y = Math.round(relY / pieceSize - 0.5);
 
-      if (x >= 0 && x < size && y >= 0 && y < size) {
-        const occupied = Array.from(board.children).some(el => {
-          return (
-            el.classList.contains('piece') &&
-            parseInt(el.dataset.currentX) === x &&
-            parseInt(el.dataset.currentY) === y
-          );
-        });
+      const x = Math.floor(relX / pieceSize);
+      const y = Math.floor(relY / pieceSize);
 
-        if (!occupied) {
-          piece.style.left = `${x * pieceSize}px`;
-          piece.style.top = `${y * pieceSize}px`;
-          board.appendChild(piece);
-          piece.style.position = 'absolute';
-          piece.dataset.currentX = x;
-          piece.dataset.currentY = y;
-          checkWin();
-        } else {
-          returnToPool(piece);
-        }
+      // Условия допустимого попадания
+      const offsetInsideCellX = relX % pieceSize;
+      const offsetInsideCellY = relY % pieceSize;
+
+      const isCloseToCenter = (
+        offsetInsideCellX > 20 && offsetInsideCellX < 80 &&
+        offsetInsideCellY > 20 && offsetInsideCellY < 80
+      );
+
+      const occupied = Array.from(board.children).some(el => {
+        return (
+          el.classList.contains('piece') &&
+          parseInt(el.dataset.currentX) === x &&
+          parseInt(el.dataset.currentY) === y
+        );
+      });
+
+      if (x >= 0 && x < size && y >= 0 && y < size && !occupied && isCloseToCenter) {
+        piece.style.left = `${x * pieceSize}px`;
+        piece.style.top = `${y * pieceSize}px`;
+        board.appendChild(piece);
+        piece.style.position = 'absolute';
+        piece.dataset.currentX = x;
+        piece.dataset.currentY = y;
+        checkWin();
       } else {
         returnToPool(piece);
       }
